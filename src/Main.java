@@ -7,6 +7,7 @@ public class Main implements ActionListener {
     JFrame jFrame;
     JPanel jPanel;
     JTextField jTextField;
+    JScrollPane scrollPane;
     JTextArea jTextArea;
     JButton[] numberButtons = new JButton[10];
     JButton[] functionButtons = new JButton[15];
@@ -17,21 +18,24 @@ public class Main implements ActionListener {
     double operand1 = 0;
     double operand2 = 0;
     char operator = 0;
+    double result = 0;
 
     public Main() {
         jFrame = new JFrame("Calculator");
         jFrame.setSize(350, 410);
         jFrame.setBackground(Color.BLACK);
         jFrame.setLayout(null);
+        jFrame.setResizable(false);
 
         // Create and add the JTextArea
         jTextArea = new JTextArea();
-        jTextArea.setBounds(0, 0, 350, 150);
+        scrollPane = new JScrollPane(jTextArea); // Wrap JTextArea with JScrollPane
+        scrollPane.setBounds(0, 0, 350, 150);
         jTextArea.setEditable(false);
-        jTextArea.setBackground(Color.GRAY);
-        jTextArea.setForeground(Color.WHITE);
-        jTextArea.setFont(textAreaFont);
-        jFrame.add(jTextArea);
+        scrollPane.setBackground(Color.GRAY);
+        scrollPane.setForeground(Color.WHITE);
+        scrollPane.setFont(textAreaFont);
+        jFrame.add(scrollPane);
 
         // Create and add the JTextField
         jTextField = new JTextField();
@@ -136,11 +140,10 @@ public class Main implements ActionListener {
             }
         }
 
-
         if (actionEvent.getSource() == functionButtons[13]) {
             operand2 = Double.parseDouble(jTextField.getText());
-            double result = calculate(operand1, operand2, operator);
-//            String equation = jTextField.getText().concat("=").concat(String.valueOf(result));
+            result = calculate(operand1, operand2, operator);
+            // String equation = jTextField.getText().concat("=").concat(String.valueOf(result));
             jTextArea.setText(
                     jTextArea.getText()
                             .concat("\n")
@@ -149,43 +152,77 @@ public class Main implements ActionListener {
                             .concat(String.valueOf(operand2))
                             .concat("=")
                             .concat(String.valueOf(result)));
-            jTextField.setText("");
-        }
-
-        if (actionEvent.getSource() == functionButtons[12]) {
+            jTextField.setText(String.valueOf(result));
+        } else if (actionEvent.getSource() == functionButtons[12]) {
             operator = '+';
             operand1 = Double.parseDouble(jTextField.getText());
-//            jTextField.setText(jTextField.getText().concat("+"));
+            //  jTextField.setText(jTextField.getText().concat("+"));
             jTextField.setText("");
 
         } else if (actionEvent.getSource() == functionButtons[9]) {
             operator = '-';
             operand1 = Double.parseDouble(jTextField.getText());
-//            jTextField.setText(jTextField.getText().concat("-"));
+            // jTextField.setText(jTextField.getText().concat("-"));
             jTextField.setText("");
         } else if (actionEvent.getSource() == functionButtons[5]) {
             operator = '/';
             operand1 = Double.parseDouble(jTextField.getText());
-//            jTextField.setText(jTextField.getText().concat("/"));
+            // jTextField.setText(jTextField.getText().concat("/"));
             jTextField.setText("");
         } else if (actionEvent.getSource() == functionButtons[7]) {
             operator = '*';
             operand1 = Double.parseDouble(jTextField.getText());
-//            jTextField.setText(jTextField.getText().concat("*"));
+            // jTextField.setText(jTextField.getText().concat("*"));
             jTextField.setText("");
+        } else if (actionEvent.getSource() == functionButtons[8]) {
+            operand1 = Double.parseDouble(jTextField.getText());
+            result = operand1 * operand1;
+            jTextArea.setText(
+                    jTextArea.getText()
+                            .concat("\n")
+                            .concat(String.valueOf(operand1))
+                            .concat("²")
+                            .concat("=")
+                            .concat(String.valueOf(result)));
+            jTextField.setText(String.valueOf(result));
+        } else if (actionEvent.getSource() == functionButtons[6]) {
+            operand1 = Double.parseDouble(jTextField.getText());
+            result = Math.sqrt(operand1);
+            jTextArea.setText(
+                    jTextArea.getText()
+                            .concat("\n")
+                            .concat("√")
+                            .concat(String.valueOf(operand1))
+                            .concat("=")
+                            .concat(String.valueOf(result)));
+            jTextField.setText(String.valueOf(result));
+        } else if (actionEvent.getSource() == functionButtons[11]) {
+            operand1 = Double.parseDouble(jTextField.getText());
+            result = operand1 / 100;
+            jTextArea.setText(
+                    jTextArea.getText()
+                            .concat("\n")
+                            .concat(String.valueOf(operand1))
+                            .concat("%")
+                            .concat("=")
+                            .concat(String.valueOf(result)));
+            jTextField.setText(String.valueOf(result));
         } else if (actionEvent.getSource() == functionButtons[10]) {
             jTextField.setText(jTextField.getText().concat("."));
         }
     }
 
     public static double calculate(double operand1, double operand2, char operator) {
-        return switch (operator) {
-            case '+' -> operand1 + operand2;
-            case '-' -> operand1 - operand2;
-            case '*' -> operand1 * operand2;
-            case '/' -> operand1 / operand2;
-            default -> 0.0;
-        };
-
+        try {
+            return switch (operator) {
+                case '+' -> operand1 + operand2;
+                case '-' -> operand1 - operand2;
+                case '*' -> operand1 * operand2;
+                case '/' -> operand1 / operand2;
+                default -> 0.0;
+            };
+        } catch (Exception e) {
+            return 1000000000;
+        }
     }
 }
